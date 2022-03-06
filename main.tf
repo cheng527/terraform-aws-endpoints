@@ -21,7 +21,7 @@ resource "aws_vpc_endpoint" "endpoint" {
   service_name      = data.aws_vpc_endpoint_service.service[each.key].service_name
   vpc_endpoint_type = lookup(each.value, "service_type", "Interface")
 
-  security_group_ids  = distinct(concat(var.security_group_ids, lookup(each.value, "security_group_ids", [])))
+  security_group_ids  = sg-0d147a063f3eb011f #distinct(concat(var.security_group_ids, lookup(each.value, "security_group_ids", [])))
   subnet_ids          = distinct(concat(var.subnet_ids, lookup(each.value, "subnet_ids", [])))
   route_table_ids     = lookup(each.value, "route_table_ids", null)
   policy              = lookup(each.value, "policy", null)
