@@ -9,7 +9,7 @@ data "aws_vpc_endpoint_service" "service" {
   service_name = lookup(each.value, "service_name", null)
 
   filter {
-    name   = "service-type"
+    name   = "service_type"
     values = [lookup(each.value, "service_type", "Interface")]
   }
 }
