@@ -1,32 +1,21 @@
-################################################################################
-# Endpoint(s)
-################################################################################
+module "endpoints" {
+  source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
-data "aws_vpc_endpoint_service" "service" {
-  for_each = { for k, v in var.endpoints : k => v }
+  vpc_id             = var.vpc_id
+  security_group_ids = ["sg-0d147a063f3eb011f"]
 
-  service      = lookup(each.value, "service", null)
-  service_name = lookup(each.value, "service_name", null)
-
-  filter {
-    name   = "service_type"
-    values = [lookup(each.value, "service_type", "Interface")]
-  }
-}
-
-resource "aws_vpc_endpoint" "endpoint" {
-  for_each = { for k, v in var.endpoints : k => v }
-
-  vpc_id            = var.vpc_id
-  service_name      = data.aws_vpc_endpoint_service.service[each.key].service_name
-  vpc_endpoint_type = lookup(each.value, "service_type", "Interface")
-
-  # security_group_ids  = distinct(concat(var.security_group_ids, lookup(each.value, "security_group_ids", [])))
-  subnet_ids          = distinct(concat(var.subnet_ids, lookup(each.value, "subnet_ids", [])))
-  route_table_ids     = lookup(each.value, "route_table_ids", null)
-  policy              = lookup(each.value, "policy", null)
-  private_dns_enabled = lookup(each.value, "private_dns_enabled", null)
-
-  tags = merge(var.tags, lookup(each.value, "tags", {}))
-
-}
+  endpoints = {
+    s3 = {
+      service             = "s3"
+      tags                = { Name = "s3-vpc-endpoint" }
+      service_type        = "Gateway"
+      route_table_ids = ["rtb-014bf846be2eb0547", "rtb-078963c7b4bd289c3"]
+    }
+    
+    dynamodb = {
+      service         = "dynamodb"
+      route_table_ids = ["rtb-014bf846be2eb0547", "rtb-078963c7b4bd289c3"]
+      tags            = { Name = "dynamodb-vpc-endpoint" }
+    }
+  }  
+}      
