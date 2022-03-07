@@ -12,10 +12,11 @@ module "endpoints" {
       route_table_ids = ["rtb-014bf846be2eb0547", "rtb-078963c7b4bd289c3"]
     }
     
-    # dynamodb = {
-      #service         = "dynamodb"
-      #route_table_ids = ["rtb-014bf846be2eb0547", "rtb-078963c7b4bd289c3"]
-     # tags            = { Name = "dynamodb-vpc-endpoint" }
-    #}
+    dynamodb = {
+      service         = "dynamodb"
+      route_table_ids = ["rtb-014bf846be2eb0547", "rtb-078963c7b4bd289c3"]
+      tags            = { Name = "dynamodb-vpc-endpoint" }
+      service_type    = "Gateway"
+    }
   }  
 }      
